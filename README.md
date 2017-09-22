@@ -1,39 +1,23 @@
-# node-js-getting-started
+# lichess-notify
 
-A barebones Node.js app using [Express 4](http://expressjs.com/).
-
-This application supports the [Getting Started with Node on Heroku](https://devcenter.heroku.com/articles/getting-started-with-nodejs) article - check it out.
-
-## Running Locally
-
-Make sure you have [Node.js](http://nodejs.org/) and the [Heroku CLI](https://cli.heroku.com/) installed.
-
-```sh
-$ git clone git@github.com:heroku/node-js-getting-started.git # or clone your own fork
-$ cd node-js-getting-started
-$ npm install
-$ npm start
-```
-
-Your app should now be running on [localhost:5000](http://localhost:5000/).
+This is a simple notification service for pending games on [lichess](https://lichess.org).
+It can be deployed on [Heroku](https://heroku.com) and should be run with the [heroku scheduler](https://devcenter.heroku.com/articles/scheduler) and hence only uses minimal dyno-hours (rather seconds ;-)).
 
 ## Deploying to Heroku
 
 ```
-$ heroku create
-$ git push heroku master
-$ heroku open
+heroku create
+git push heroku master
+heroku config:set USERS=lichessuser:notification@mail.com;another_lichess_user:other@mail.com
+heroku config:set FIRST_REMINDER_HOURS=2 # optional
+heroku addons:create scheduler:standard 
+heroku addons:open scheduler # opens browser - configure job with command "node index.js"
+heroku addons:create sendgrid:starter
+heroku addons:open sendgrid # opens browser - create (and remember) sendgrid api key
+heroku config:set SENDGRID_API_KEY=YOUR_SENDGRID_API_KEY # see line above
 ```
 or
 
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-## Documentation
-
-For more information about using Node.js on Heroku, see these Dev Center articles:
-
-- [Getting Started with Node.js on Heroku](https://devcenter.heroku.com/articles/getting-started-with-nodejs)
-- [Heroku Node.js Support](https://devcenter.heroku.com/articles/nodejs-support)
-- [Node.js on Heroku](https://devcenter.heroku.com/categories/nodejs)
-- [Best Practices for Node.js Development](https://devcenter.heroku.com/articles/node-best-practices)
-- [Using WebSockets on Heroku with Node.js](https://devcenter.heroku.com/articles/node-websockets)
++ configure correct env `SENDGRID_API_KEY` and scheduler as described above.

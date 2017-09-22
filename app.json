@@ -1,8 +1,24 @@
 {
-  "name": "Start on Heroku: Node.js",
-  "description": "A barebones Node.js app using Express 4",
-  "repository": "https://github.com/heroku/node-js-getting-started",
-  "logo": "https://cdn.rawgit.com/heroku/node-js-getting-started/master/public/node.svg",
-  "keywords": ["node", "express", "heroku"],
-  "image": "heroku/nodejs"
+  "name": "lichess-notify",
+  "description": "a simple notification service for pending games on lichess",
+  "repository": "https://github.com/daniel-sc/lichess-notify",
+  "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Chess_nlt45.svg/90px-Chess_nlt45.svg",
+  "keywords": ["node", "heroku", "lichess"],
+  "image": "heroku/nodejs",
+  "env": {
+    "USERS": {
+      "description": "User name and mail notification configuration of the form: lichessuser:notification@mail.com;another_lichess_user:other@mail.com"
+    },
+    "FIRST_REMINDER_HOURS": {
+      "description": "Time in hours after a move for the first notification.",
+      "value": "2"
+    },
+    "SENDGRID_API_KEY": {
+      "description": "Sendgrid api key"
+    }
+  },
+  "addons": [
+    "sendgrid:starter",
+    "scheduler:standard"
+  ]
 }
