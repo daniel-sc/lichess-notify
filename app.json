@@ -17,5 +17,7 @@
   "addons": [
     "sendgrid:starter",
     "scheduler:standard"
-  ]
+  ],
+  "formation": {
+  }
 }
