@@ -12,9 +12,6 @@
     "FIRST_REMINDER_HOURS": {
       "description": "Time in hours after a move for the first notification.",
       "value": "2"
-    },
-    "SENDGRID_API_KEY": {
-      "description": "Sendgrid api key"
     }
   },
   "addons": [

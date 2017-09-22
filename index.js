@@ -12,25 +12,21 @@ process.env.USERS.split(',').forEach(userAndAddress => {
 });
 
 function notifyByMail(recipient, hours, url, total) {
-  var helper = require('sendgrid').mail;
-  var from_email = new helper.Email('daniel-schreiber@gmx.de');
-  var to_email = new helper.Email(recipient);
-  var subject = '[lichess-notify] Games pending!';
-  var content = new helper.Content('text/plain', `Game ready (${hours} hours left): ${url}\n\nTotal pending games: ${total}`);
-  var mail = new helper.Mail(from_email, subject, to_email, content);
+  const subject = '[lichess-notify] Games pending!';
+  const from = 'daniel-schreiber@gmx.de';
   
-  var sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
-  var request = sg.emptyRequest({
+  let text = `Game ready (${hours} hours left): ${url}\n\nTotal pending games: ${total}`;
+  let postBody = `to=${recipient}&amp;subject=${subject}&amp;text=${text}&amp;from=${from}`
+  + `&amp;api_user=${process.env.SENDGRID_USERNAME}&amp;api_key=${process.env.SENDGRID_PASSWORD}`;
+  console.log('post body: ' + postBody);
+  fetch(`https://api.sendgrid.com/api/mail.send.json`, { 
     method: 'POST',
-    path: '/v3/mail/send',
-    body: mail.toJSON(),
-  });
-  
-  sg.API(request, function(error, response) {
-    console.log(response.statusCode);
-    console.log(response.body);
-    console.log(response.headers);
-  });
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    body: postBody
+  }).then(r => {
+    return r.text();
+  }).then(body => console.log('send mail result: ' + body))
+  .catch(callback);
 }
 
 for (let user in userToNotifyAdresses) {

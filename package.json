@@ -10,8 +10,7 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "node-fetch": "1.7.3",
-    "sendgrid": "5.2.3"
+    "node-fetch": "1.7.3"
   },
   "devDependencies": {},
   "repository": {
