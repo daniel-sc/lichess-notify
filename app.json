@@ -9,6 +9,9 @@
     "USERS": {
       "description": "User name and mail notification configuration of the form: lichessuser:notification@mail.com;another_lichess_user:other@mail.com"
     },
+    "SENDER": {
+      "description": "Email address that is used/displayed as sender of notifications."
+    },
     "FIRST_REMINDER_HOURS": {
       "description": "Time in hours after a move for the first notification.",
       "value": "2"

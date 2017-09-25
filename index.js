@@ -13,10 +13,9 @@ process.env.USERS.split(',').forEach(userAndAddress => {
 
 function notifyByMail(recipient, hours, url, total) {
   const subject = '[lichess-notify] Games pending!';
-  const from = 'daniel-schreiber@gmx.de';
   
   let text = `Game ready (${hours} hours left): ${url}\n\nTotal pending games: ${total}`;
-  let postBody = `to=${recipient}&amp;subject=${subject}&amp;text=${text}&amp;from=${from}`
+  let postBody = `to=${recipient}&amp;subject=${subject}&amp;text=${text}&amp;from=${process.env.SENDER}`
   + `&amp;api_user=${process.env.SENDGRID_USERNAME}&amp;api_key=${process.env.SENDGRID_PASSWORD}`;
   console.log('post body: ' + postBody);
   fetch(`https://api.sendgrid.com/api/mail.send.json`, { 

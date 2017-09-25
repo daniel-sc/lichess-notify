@@ -5,17 +5,20 @@ It can be deployed on [Heroku](https://heroku.com) and should be run with the [h
 
 ## Deploying to Heroku
 
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
+.. and configure scheduler as described above.
+
+or manually:
+
 ```
 heroku create
 git push heroku master
 heroku config:set USERS=lichessuser:notification@mail.com;another_lichess_user:other@mail.com
+heroku config:set SENDER=your_sender@mail.com
 heroku config:set FIRST_REMINDER_HOURS=2 # optional
 heroku addons:create sendgrid:starter
 heroku addons:create scheduler:standard 
 heroku addons:open scheduler # opens browser - configure job with command "node index.js"
 ```
-or
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
-
-.. and configure scheduler as described above.
