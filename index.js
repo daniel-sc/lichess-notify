@@ -3,13 +3,17 @@ var callback = (err, output) => {
   console.log('RESULT: ' + JSON.stringify(output));
   console.log('error: ' + JSON.stringify(err));
 }
-const firstReminderHours = process.env.FIRST_REMINDER_HOURS || 2;
 
 let userToNotifyAdresses = {};
 process.env.USERS.split(',').forEach(userAndAddress => {
   userAndAddressArray = userAndAddress.split(':');
   userToNotifyAdresses[userAndAddressArray[0]] = userAndAddressArray[1];
 });
+
+const NOTIFY_HOURS_FROM_LAST_MOVE = process.env.NOTIFY_HOURS_FROM_LAST_MOVE.split(",").map(Number); 
+const NOTIFY_HOURS_TO_END = process.env.NOTIFY_HOURS_TO_END.split(",").map(Number).sort((a, b) => b - a); // largest first
+console.log('NOTIFY_HOURS_FROM_LAST_MOVE: ', NOTIFY_HOURS_FROM_LAST_MOVE);
+console.log('NOTIFY_HOURS_TO_END: ', NOTIFY_HOURS_TO_END);
 
 function notifyByMail(recipient, hours, url, total) {
   const subject = '[lichess-notify] Games pending!';
@@ -42,8 +46,13 @@ for (let user in userToNotifyAdresses) {
       let openGames = json['currentPageResults']
         .filter(g => g.perf == 'correspondence')
         .filter(g => g.status == 'started')
-        .filter(g => (new Date(g.lastMoveAt)).getTime() < Date.now() - (1000 * 60 * 60 * firstReminderHours))
-        .filter(g => (g.turns % 2) == (g.players.white.userId == userId ? 0 : 1));
+        .filter(g => (g.turns % 2) == (g.players.white.userId == userId ? 0 : 1))
+        .filter(g => {
+          let timeWaitingHours = Math.floor((new Date(g.lastMoveAt).getTime() - Date.now())  / (1000 * 60 * 60));
+          let timeLeftHours = (g.daysPerTurn * 24) - timeWaitingHours - 1; 
+          // TODO assure no overlap!
+          return NOTIFY_HOURS_TO_END.includes(timeLeftHours) || NOTIFY_HOURS_FROM_LAST_MOVE.includes(timeWaitingHours);
+        });
 
       if(openGames.length > 0) {
         let g = openGames[0];

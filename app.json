@@ -12,9 +12,13 @@
     "SENDER": {
       "description": "Email address that is used/displayed as sender of notifications."
     },
-    "FIRST_REMINDER_HOURS": {
-      "description": "Time in hours after a move for the first notification.",
-      "value": "2"
+    "NOTIFY_HOURS_FROM_LAST_MOVE": {
+      "description": "Time in hours for notifications after the last move",
+      "value": "1, 5, 25"
+    },
+    "NOTIFY_HOURS_TO_END":  {
+      "description": "Time in hours for notifications before deadline",
+      "value": "0, 1, 3, 5"
     }
   },
   "addons": [
