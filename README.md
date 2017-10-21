@@ -17,7 +17,8 @@ heroku create
 git push heroku master
 heroku config:set USERS=lichessuser:notification@mail.com;another_lichess_user:other@mail.com
 heroku config:set SENDER=your_sender@mail.com
-heroku config:set FIRST_REMINDER_HOURS=2 # optional
+heroku config:set NOTIFY_HOURS_FROM_LAST_MOVE=1,5,25
+heroku config:set NOTIFY_HOURS_TO_END=0,1,3,5
 heroku addons:create sendgrid:starter
 heroku addons:create scheduler:standard 
 heroku addons:open scheduler # opens browser - configure job with command "node index.js"

@@ -1,7 +1,9 @@
 var fetch = require('node-fetch');
 var callback = (err, output) => {
   console.log('RESULT: ' + JSON.stringify(output));
-  console.log('error: ' + JSON.stringify(err));
+  if(err) {
+    console.log('error: ' + JSON.stringify(err));
+  }
 }
 
 let userToNotifyAdresses = {};
@@ -48,9 +50,9 @@ for (let user in userToNotifyAdresses) {
         .filter(g => g.status == 'started')
         .filter(g => (g.turns % 2) == (g.players.white.userId == userId ? 0 : 1))
         .filter(g => {
-          let timeWaitingHours = Math.floor((new Date(g.lastMoveAt).getTime() - Date.now())  / (1000 * 60 * 60));
+          let timeWaitingHours = Math.floor((Date.now() - new Date(g.lastMoveAt).getTime())  / (1000 * 60 * 60));
           let timeLeftHours = (g.daysPerTurn * 24) - timeWaitingHours - 1; 
-          // TODO assure no overlap!
+          console.log(`timeWaitingHours: ${timeWaitingHours} | timeLeftHours: ${timeLeftHours}`);
           return NOTIFY_HOURS_TO_END.includes(timeLeftHours) || NOTIFY_HOURS_FROM_LAST_MOVE.includes(timeWaitingHours);
         });
 
