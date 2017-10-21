@@ -1,8 +1,8 @@
 var fetch = require('node-fetch');
 var callback = (err, output) => {
-  console.log('RESULT: ' + JSON.stringify(output));
+  console.log('result: ' + JSON.stringify(output));
   if(err) {
-    console.log('error: ' + JSON.stringify(err));
+    console.error ('ERROR: ' + JSON.stringify(err));
   }
 }
 
@@ -48,16 +48,16 @@ for (let user in userToNotifyAdresses) {
       let openGames = json['currentPageResults']
         .filter(g => g.perf == 'correspondence')
         .filter(g => g.status == 'started')
-        .filter(g => (g.turns % 2) == (g.players.white.userId == userId ? 0 : 1))
-        .filter(g => {
+        .filter(g => (g.turns % 2) == (g.players.white.userId == userId ? 0 : 1));
+      let notifyGames = openGames.filter(g => {
           let timeWaitingHours = Math.floor((Date.now() - new Date(g.lastMoveAt).getTime())  / (1000 * 60 * 60));
           let timeLeftHours = (g.daysPerTurn * 24) - timeWaitingHours - 1; 
           console.log(`timeWaitingHours: ${timeWaitingHours} | timeLeftHours: ${timeLeftHours}`);
           return NOTIFY_HOURS_TO_END.includes(timeLeftHours) || NOTIFY_HOURS_FROM_LAST_MOVE.includes(timeWaitingHours);
         });
 
-      if(openGames.length > 0) {
-        let g = openGames[0];
+      if(notifyGames.length > 0) {
+        let g = notifyGames[0];
         console.log('last move: ' + new Date(g.lastMoveAt));
         let timeLeftMs = new Date(g.lastMoveAt).getTime() - Date.now() + (g.daysPerTurn*24*60*60*1000);
         let timeLeftHours =  Math.floor(timeLeftMs / (1000 * 60 * 60));
@@ -65,10 +65,8 @@ for (let user in userToNotifyAdresses) {
         console.log('time left: ' + timeLeftHours);
 
         notifyByMail(address, timeLeftHours, g.url, openGames.length);
-        callback(null, {gamesPending: openGames.length});
-      } else {
-        callback(null, {gamesPending: 0});
       }
+      callback(null, {notifyGames: notifyGames.length, gamesPending: openGames.length});
     })
     .catch(callback);
 }
